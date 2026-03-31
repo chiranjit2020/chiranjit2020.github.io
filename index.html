@@ -1,537 +1,1405 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0a0a" />
-  <meta name="description" content="Chiranjit Karmakar — Fullstack Developer & Designer" />
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="./images/favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-  <link rel="manifest" href="./images/site.webmanifest">
-  <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="msapplication-TileColor" content="#D65A31">
-  <title>Chiranjit Karmakar - Designer, Front-end & Backend Developer, Founder of CODEWORM</title>
-  <link rel="manifest" href="#" />
+  <meta name="description" content="Chiranjit Karmakar — Fullstack Developer & Founder of CODEWORM" />
+  <title>CK // Chiranjit Karmakar</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080808;
+  --bg-1: #0e0e0e;
+  --bg-2: #141414;
+  --bg-3: #1a1a1a;
+  --surface: #111111;
+  --surface-2: #181818;
+  --border: #232323;
+  --border-2: #2e2e2e;
+  --text: #e8e8e8;
+  --text-muted: #888;
+  --text-dim: #555;
+  --accent: #00ff88;
+  --accent-2: #00cc6a;
+  --accent-dim: rgba(0,255,136,0.08);
+  --accent-glow: rgba(0,255,136,0.15);
+  --warn: #ffb800;
+  --err: #ff4545;
+  --blue: #4f9eff;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: 'Syne', sans-serif;
+  --nav-h: 64px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ===== CURSOR ===== */
+.cursor {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.cursor.expanded { width: 52px; height: 52px; border-color: var(--accent-2); opacity: 0.6; }
+.cursor-dot {
+  position: fixed; top: 0; left: 0; z-index: 10000;
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ===== SCANLINES ===== */
+.scanlines {
+  position: fixed; inset: 0; z-index: 1000;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+}
+
+/* ===== BOOT SCREEN ===== */
+.boot-screen {
+  position: fixed; inset: 0; z-index: 5000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+}
+.boot-content { width: 540px; max-width: 90vw; }
+.boot-logo {
+  font-family: var(--font-display);
+  font-size: 3rem; font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+.boot-progress-wrap {
+  height: 2px; background: var(--border);
+  margin-bottom: 1.5rem; overflow: hidden;
+}
+.boot-progress-bar {
+  height: 100%; width: 0%;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+.boot-log {
+  font-size: 0.72rem; color: var(--text-muted);
+  max-height: 200px; overflow-y: auto;
+  line-height: 1.8;
+}
+.boot-line::before { content: "> "; color: var(--accent); }
+
+/* ===== NAVBAR ===== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s, border-color 0.4s;
+}
+.nav.scrolled {
+  background: rgba(8,8,8,0.92);
+  border-color: var(--border);
+  backdrop-filter: blur(12px);
+}
+.nav-brand { display: flex; align-items: center; gap: 0.5rem; }
+.prompt { color: var(--accent); font-size: 0.8rem; }
+.nav-name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--text); }
+
+.nav-links {
+  display: flex; gap: 0.25rem; list-style: none;
+}
+.nav-links a {
+  font-size: 0.75rem; color: var(--text-muted);
+  padding: 0.4rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+.nav-links a:hover {
+  color: var(--accent); border-color: var(--border-2);
+  background: var(--accent-dim);
+}
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: none;
+  padding: 4px;
+}
+.hamburger span {
+  display: block; width: 24px; height: 1.5px;
+  background: var(--text-muted);
+  transition: all 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* ===== SECTIONS ===== */
+.section {
+  min-height: 100vh; padding: var(--nav-h) 0 5rem;
+  position: relative;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.section.visible { opacity: 1; transform: none; }
+.section#hero { opacity: 1; transform: none; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+.section-header { margin-bottom: 3rem; }
+.section-tag {
+  font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.accent { color: var(--accent); }
+
+/* ===== TERMINAL WINDOW ===== */
+.terminal-bar {
+  height: 36px;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1rem; gap: 0.75rem;
+}
+.terminal-dots { display: flex; gap: 6px; }
+.dot {
+  width: 12px; height: 12px; border-radius: 50%;
+}
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #28c840; }
+.terminal-title { font-size: 0.72rem; color: var(--text-muted); flex: 1; text-align: center; }
+.terminal-body {
+  background: var(--bg-1);
+  padding: 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+/* ===== HERO ===== */
+.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+.hero-bg-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+  opacity: 0.4;
+}
+
+.hero-container {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2rem; z-index: 1; width: 100%; max-width: 700px; padding: 0 1.5rem;
+  padding-top: calc(var(--nav-h) + 1rem);
+}
+
+.hero-terminal-window {
+  width: 100%;
+  border: 1px solid var(--border-2);
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,255,136,0.06), 0 0 0 1px var(--border);
+}
+
+.term-line { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); }
+.prompt-t { color: var(--accent); user-select: none; }
+.cmd { color: var(--blue); }
+.term-output {
+  padding-left: 1rem; color: var(--text);
+  border-left: 2px solid var(--border);
+  margin: 0.1rem 0 0.5rem 0.3rem;
+}
+.name-output {
+  font-family: var(--font-display);
+  font-size: 1.5rem; font-weight: 800;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.role-cycle { color: var(--warn); transition: opacity 0.4s; }
+.ls-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; color: var(--blue); }
+.ls-grid span::after { content: ""; }
+.active-line { opacity: 0.5; }
+.cursor-blink {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.hero-cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 4px;
+  cursor: none;
+  transition: all var(--transition);
+  letter-spacing: 0.02em;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  border: 1.5px solid var(--accent);
+  font-weight: 700;
+}
+.btn-primary:hover { background: var(--accent-2); border-color: var(--accent-2); transform: translateY(-2px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-2);
+}
+.btn-ghost:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); }
+
+.hero-stats {
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.stat { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+.stat-num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: var(--accent); line-height: 1; }
+.stat-label { font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; }
+.stat-div { color: var(--border-2); font-size: 1.5rem; }
+
+.scroll-indicator {
+  position: absolute; bottom: 2rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+}
+.scroll-indicator .prompt-t { font-size: 0.65rem; opacity: 0.4; }
+.scroll-arrow {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollAnim 1.8s ease-in-out infinite;
+}
+@keyframes scrollAnim {
+  0%,100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.5); opacity: 0.3; }
+}
+
+/* ===== ABOUT ===== */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.about-terminal { border: 1px solid var(--border-2); border-radius: 8px; overflow: hidden; }
+.about-json {
+  font-size: 0.78rem; line-height: 1.7;
+  white-space: pre-wrap; color: var(--text-muted);
+  min-height: 300px;
+}
+.about-lead {
+  font-size: 1.1rem; line-height: 1.7;
+  color: var(--text); margin-bottom: 1.25rem; font-weight: 500;
+}
+.about-body {
+  font-size: 0.85rem; color: var(--text-muted); line-height: 1.8;
+  margin-bottom: 1rem;
+}
+.highlight { color: var(--accent); font-weight: 600; }
+.about-facts { margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.fact-item { display: flex; gap: 0.5rem; font-size: 0.8rem; }
+.fact-key { color: var(--blue); min-width: 100px; }
+.fact-sep { color: var(--text-dim); }
+.fact-val { color: var(--text-muted); }
+.status-green { color: var(--accent); }
+
+/* ===== SKILLS ===== */
+.skills-filter { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.filter-btn {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  background: transparent; color: var(--text-muted);
+  border: 1px solid var(--border-2); border-radius: 4px;
+  padding: 0.4rem 1rem; cursor: none;
+  transition: all var(--transition);
+}
+.filter-btn:hover, .filter-btn.active {
+  color: var(--accent); border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+
+.skill-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 0.85rem;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+  animation: fadeIn 0.3s ease forwards;
+}
+.skill-card:hover {
+  border-color: var(--accent); background: var(--bg-2);
+  transform: translateY(-3px);
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.skill-icon {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em;
+  color: var(--accent); margin-bottom: 0.5rem;
+  width: 32px; height: 32px;
+  background: var(--accent-dim); border: 1px solid var(--border-2);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.skill-name { font-size: 0.75rem; color: var(--text); margin-bottom: 0.5rem; }
+.skill-bar-wrap {
+  height: 2px; background: var(--border);
+  border-radius: 2px; overflow: hidden; margin-bottom: 0.25rem;
+}
+.skill-bar {
+  height: 100%; background: var(--accent);
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+}
+.skill-level { font-size: 0.6rem; color: var(--text-dim); text-align: right; }
+
+/* ===== PROJECTS ===== */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.5rem;
+  position: relative; overflow: hidden;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.project-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--accent-glow), transparent 60%);
+  opacity: 0; transition: opacity var(--transition);
+}
+.project-card:hover { border-color: var(--border-2); transform: translateY(-4px); }
+.project-card:hover::before { opacity: 1; }
+
+.proj-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.proj-id { font-size: 0.65rem; color: var(--text-dim); font-weight: 700; letter-spacing: 0.1em; }
+.proj-status {
+  font-size: 0.62rem; padding: 0.15rem 0.5rem;
+  border-radius: 3px; font-weight: 600; letter-spacing: 0.08em;
+}
+.status-live { background: rgba(0,255,136,0.12); color: var(--accent); border: 1px solid rgba(0,255,136,0.25); }
+.status-shipped { background: rgba(79,158,255,0.12); color: var(--blue); border: 1px solid rgba(79,158,255,0.25); }
+.proj-year { font-size: 0.65rem; color: var(--text-dim); margin-left: auto; }
+.proj-name {
+  font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+  color: var(--text); margin-bottom: 0.75rem;
+}
+.proj-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+.proj-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+.proj-tag {
+  font-size: 0.62rem; color: var(--text-dim);
+  background: var(--bg-3); border: 1px solid var(--border);
+  padding: 0.2rem 0.5rem; border-radius: 3px;
+}
+.proj-link { font-size: 0.75rem; color: var(--accent); transition: letter-spacing var(--transition); }
+.proj-link:hover { letter-spacing: 0.05em; }
+
+/* ===== EXPERIENCE ===== */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 1px; background: var(--border-2);
+}
+
+.timeline-item {
+  position: relative; margin-bottom: 3rem; padding-left: 1.5rem;
+}
+.timeline-marker {
+  position: absolute; left: -2.35rem; top: 0.35rem;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--accent);
+  transition: background var(--transition);
+}
+.timeline-item:hover .timeline-marker { background: var(--accent); }
+
+.timeline-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.timeline-year { font-size: 0.72rem; color: var(--accent); }
+.timeline-commit {
+  font-size: 0.68rem; color: var(--text-dim);
+  background: var(--bg-3); border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem; border-radius: 3px;
+}
+.timeline-role {
+  font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin-bottom: 0.25rem;
+}
+.timeline-org { font-size: 0.8rem; color: var(--blue); margin-bottom: 0.75rem; }
+.timeline-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.8; }
+
+/* ===== CONTACT ===== */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.contact-terminal { border: 1px solid var(--border-2); border-radius: 8px; overflow: hidden; }
+.contact-form-wrap { display: flex; flex-direction: column; gap: 1rem; }
+
+.form-row { display: flex; align-items: flex-start; gap: 0.75rem; }
+.form-label { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; padding-top: 0.35rem; }
+
+.terminal-input {
+  flex: 1; width: 100%;
+  font-family: var(--font-mono); font-size: 0.8rem;
+  background: var(--bg-3); color: var(--text);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 0.5rem 0.75rem; outline: none;
+  resize: vertical;
+  transition: border-color var(--transition);
+}
+.terminal-input:focus { border-color: var(--accent); }
+.terminal-input::placeholder { color: var(--text-dim); }
+
+.submit-btn { align-self: flex-start; }
+.form-feedback { font-size: 0.75rem; margin-top: 0.25rem; }
+.form-feedback.error { color: var(--err); }
+.form-feedback.success { color: var(--accent); }
+
+.contact-lead { font-size: 1rem; color: var(--text); line-height: 1.7; margin-bottom: 1.5rem; }
+.contact-links { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+.contact-link {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.82rem; color: var(--text-muted);
+  transition: color var(--transition);
+}
+.contact-link:hover { color: var(--accent); }
+.link-icon { width: 28px; text-align: center; font-size: 0.9rem; }
+
+.availability-box {
+  background: var(--accent-dim); border: 1px solid rgba(0,255,136,0.25);
+  border-radius: 6px; padding: 1rem 1.25rem;
+}
+.avail-header { font-size: 0.82rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.avail-body { font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ===== FOOTER ===== */
+.footer {
+  border-top: 1px solid var(--border); padding: 1.5rem 2rem;
+}
+.footer-content { max-width: 1100px; margin: 0 auto; display: flex; gap: 0.75rem; align-items: center; }
+.footer-text { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ===== AI CHATBOT ===== */
+.chat-fab {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 800;
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #000;
+  border: none; border-radius: 6px;
+  padding: 0.65rem 1.1rem; cursor: none;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+  transition: all var(--transition);
+  box-shadow: 0 4px 24px rgba(0,255,136,0.3);
+}
+.chat-fab:hover { background: var(--accent-2); transform: translateY(-2px); }
+.fab-icon { font-size: 1rem; }
+
+.chat-panel {
+  position: fixed; bottom: 5.5rem; right: 2rem; z-index: 800;
+  width: 360px; max-width: calc(100vw - 2rem);
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+  transform: translateY(20px) scale(0.96);
+  opacity: 0; pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.chat-panel.open { transform: none; opacity: 1; pointer-events: all; }
+
+.chat-header {
+  background: var(--bg-3); border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center;
+}
+.chat-header-info { display: flex; align-items: center; gap: 0.6rem; }
+.chat-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.chat-title { font-size: 0.78rem; color: var(--text); font-weight: 500; }
+.chat-close {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.8rem; cursor: none; transition: color var(--transition);
+}
+.chat-close:hover { color: var(--text); }
+
+.chat-messages {
+  height: 280px; overflow-y: auto;
+  padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+
+.chat-msg {
+  display: flex; gap: 0.5rem; font-size: 0.78rem;
+  line-height: 1.6;
+}
+.chat-msg.user { flex-direction: row-reverse; }
+.chat-msg.user .msg-prompt { color: var(--warn); }
+.chat-msg.user .msg-text {
+  background: var(--bg-3); border: 1px solid var(--border);
+  padding: 0.4rem 0.75rem; border-radius: 6px; color: var(--text);
+  text-align: right;
+}
+.chat-msg.assistant .msg-prompt { color: var(--accent); white-space: nowrap; }
+.chat-msg.assistant .msg-text { color: var(--text-muted); }
+.chat-msg.typing .msg-text {
+  display: inline-block;
+  animation: typingPulse 1s ease infinite;
+}
+@keyframes typingPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.chat-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-top: 0.25rem; }
+.suggestion-btn {
+  font-family: var(--font-mono); font-size: 0.68rem;
+  background: var(--bg-3); color: var(--text-muted);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 0.3rem 0.6rem; cursor: none;
+  transition: all var(--transition);
+}
+.suggestion-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
+.chat-input-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border); background: var(--bg-2);
+}
+.chat-input {
+  flex: 1; font-family: var(--font-mono); font-size: 0.78rem;
+  background: transparent; border: none; outline: none;
+  color: var(--text);
+}
+.chat-input::placeholder { color: var(--text-dim); }
+.chat-send {
+  background: var(--accent); color: #000; border: none;
+  border-radius: 4px; padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  cursor: none; transition: background var(--transition);
+}
+.chat-send:hover { background: var(--accent-2); }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .nav-links { display: none; flex-direction: column; position: fixed; inset: 0 0 0 0; top: var(--nav-h); background: rgba(8,8,8,0.97); padding: 2rem; gap: 0; }
+  .nav-links.open { display: flex; }
+  .nav-links li { border-bottom: 1px solid var(--border); }
+  .nav-links a { display: block; padding: 1rem 0; font-size: 0.9rem; }
+  .hamburger { display: flex; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 0.75rem; }
+  .stat-num { font-size: 1.3rem; }
+  body { cursor: auto; }
+  .cursor, .cursor-dot { display: none; }
+  .chat-panel { width: calc(100vw - 2rem); right: 1rem; }
+  .chat-fab { right: 1rem; bottom: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .about-grid { gap: 1.5rem; }
+}
+
+</style>
 </head>
-
 <body>
-
+  <!-- Custom Cursor -->
   <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-  <div class="progress-bar" id="progress"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <a class="nav-logo" href="#hero">
-      <img src="./images/ck-new-logo6.png" alt="Chiranjit Karmakar - Designer, Front-end & Backend Developer, Founder of CODEWORM" />
-    </a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact" class="nav-cta">Hire Me</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+  <!-- Scanline Overlay -->
+  <div class="scanlines" aria-hidden="true"></div>
 
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#about" class="mob-link">About</a>
-    <a href="#skills" class="mob-link">Skills</a>
-    <a href="#projects" class="mob-link">Projects</a>
-    <a href="#contact" class="mob-link">Contact</a>
+  <!-- Boot Screen -->
+  <div class="boot-screen" id="bootScreen">
+    <div class="boot-content">
+      <div class="boot-logo">CK_OS</div>
+      <div class="boot-progress-wrap">
+        <div class="boot-progress-bar" id="bootBar"></div>
+      </div>
+      <div class="boot-log" id="bootLog"></div>
+    </div>
   </div>
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-bg-grid"></div>
-    <div class="hero-accent-blob"></div>
-    <div class="hero-number">CK</div>
+  <!-- Main App -->
+  <div class="app" id="app" style="display:none">
 
-    <div class="hero-eyebrow">Available for projects</div>
-    <h1 class="hero-name">
-      Chiranjit<br>
-      <span class="line2">Karmakar</span>
-    </h1>
-    <p class="hero-desc">
-      Fullstack developer with <strong>9+ years</strong> crafting web experiences.
-      From pixel-perfect frontends to resilient backends — I build things that work beautifully.
-    </p>
-    <div class="hero-actions">
-      <a href="#projects" class="btn btn-primary">View Work <span>→</span></a>
-      <a href="#contact" class="btn btn-outline">Let's Talk</a>
-    </div>
-    <div class="hero-scroll">
-      <div class="hero-scroll-line"></div>
-      Scroll
-    </div>
-  </section>
+    <!-- Navbar -->
+    <nav class="nav" id="navbar">
+      <div class="nav-brand">
+        <span class="prompt">root@ck:~$</span>
+        <span class="nav-name">chiranjit</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero" data-section="hero">_home</a></li>
+        <li><a href="#about" data-section="about">_about</a></li>
+        <li><a href="#skills" data-section="skills">_skills</a></li>
+        <li><a href="#projects" data-section="projects">_projects</a></li>
+        <li><a href="#experience" data-section="experience">_xp</a></li>
+        <li><a href="#contact" data-section="contact">_contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-label reveal">About Me</div>
-    <h2 class="reveal reveal-delay-1">Electrical engineer<br>turned web builder</h2>
-    <div class="about-grid">
-      <div class="about-text reveal reveal-delay-2">
-        <div id="typing-container"></div>
-
-<div id="content" style="display:none;">
-  <p>I started my journey as an Electrical Engineer, but soon found my true calling in web development — and never looked back. For over <strong>9 years</strong>, I’ve been designing and building scalable, high-performance digital products that blend clean UI with robust engineering.</p>
-
-  <p>Currently, I work as a Full Stack Web Developer and Designer at Learn Computer Academy, where I not only build real-world applications but also mentor aspiring developers. I’ve trained 100+ students, helping them transition from beginners to confident web designers and developers with industry-ready skills.</p>
-
-  <p>I’m also the founder of <strong>CODEWORM</strong>, an online learning platform focused on practical, hands-on development. Teaching keeps me deeply connected to fundamentals while constantly refining my own thinking and problem-solving approach.</p>
-
-  <p>I thrive in the fast-evolving world of web development — where adaptability is survival. From modern SPAs and APIs to custom WordPress solutions, I bring precision, performance, and an obsessive attention to detail in every line of code and every pixel I craft.</p>
-</div>
-
-        <div class="about-badges">
-          <span class="badge">Open to Remote</span>
-          <span class="badge">Freelance</span>
-          <span class="badge">Full-time</span>
-          <span class="badge">Kolkata, IN</span>
+    <!-- Hero Section -->
+    <section class="hero section" id="hero">
+      <div class="hero-bg-grid" aria-hidden="true"></div>
+      <div class="hero-container">
+        <div class="hero-terminal-window">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span class="terminal-title">ck@portfolio ~ — bash</span>
+          </div>
+          <div class="terminal-body">
+            <div class="term-line"><span class="prompt-t">$</span> <span class="cmd" data-type="whoami">whoami</span></div>
+            <div class="term-output name-output">Chiranjit Karmakar</div>
+            <div class="term-line"><span class="prompt-t">$</span> <span class="cmd" data-type="cat">cat role.txt</span></div>
+            <div class="term-output role-cycle" id="roleCycle">Fullstack Developer</div>
+            <div class="term-line"><span class="prompt-t">$</span> <span class="cmd" data-type="echo">echo $EXPERIENCE</span></div>
+            <div class="term-output">5+ years of building on the web</div>
+            <div class="term-line"><span class="prompt-t">$</span> <span class="cmd" data-type="ls">ls projects/</span></div>
+            <div class="term-output ls-grid">
+              <span>e-commerce/</span><span>saas-app/</span><span>codeworm/</span><span>open-source/</span>
+            </div>
+            <div class="term-line active-line">
+              <span class="prompt-t">$</span>
+              <span class="cursor-blink">█</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-cta-group">
+          <a href="#projects" class="btn btn-primary">./explore-work</a>
+          <a href="https://chiranjit2020.github.io/portfolio/images/chiranjit-karmakar-resume.pdf" target="_blank" class="btn btn-ghost">wget resume.pdf</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">5+</span><span class="stat-label">yrs_exp</span></div>
+          <div class="stat-div">/</div>
+          <div class="stat"><span class="stat-num">20+</span><span class="stat-label">technologies</span></div>
+          <div class="stat-div">/</div>
+          <div class="stat"><span class="stat-num">∞</span><span class="stat-label">passion</span></div>
         </div>
       </div>
-      <div class="about-stats reveal reveal-delay-3">
-        <div class="stat-card">
-          <div class="stat-num">9+</div>
-          <div class="stat-label">Years Experience</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">40+</div>
-          <div class="stat-label">Projects Shipped</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">20+</div>
-          <div class="stat-label">Technologies</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">1</div>
-          <div class="stat-label">Startup Founded</div>
-        </div>
+      <div class="scroll-indicator">
+        <span class="prompt-t">scroll</span>
+        <div class="scroll-arrow"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="skills-inner">
-      <div class="section-label reveal">Expertise</div>
-      <h2 class="reveal reveal-delay-1">What I work with</h2>
-      <div class="skills-categories">
-        <div class="skill-cat reveal">
-          <div class="skill-cat-label">Frontend</div>
-          <div class="skill-list">
-            <div class="skill-item"><span class="skill-name">HTML5 / CSS3</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.97"></div>
-              </div>
+    <!-- About Section -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 01</div>
+          <h2 class="section-title">about<span class="accent">_</span>me</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <span class="terminal-title">about.json</span>
             </div>
-            <div class="skill-item"><span class="skill-name">JavaScript</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.92"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">React JS</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.88"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Next JS</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.82"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Tailwind / Bootstrap</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.95"></div>
-              </div>
+            <div class="terminal-body about-json">
+              <pre id="aboutJson"></pre>
             </div>
           </div>
-        </div>
-        <div class="skill-cat reveal reveal-delay-1">
-          <div class="skill-cat-label">Backend</div>
-          <div class="skill-list">
-            <div class="skill-item"><span class="skill-name">Node JS</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.85"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Express JS</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.83"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">PHP</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.80"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">WordPress</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.90"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">REST APIs</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.87"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="skill-cat reveal reveal-delay-2">
-          <div class="skill-cat-label">Database & DevOps</div>
-          <div class="skill-list">
-            <div class="skill-item"><span class="skill-name">MongoDB</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.82"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">MySQL</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.78"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Linux / Bash</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.75"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Git</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.88"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">SEO</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.85"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="skill-cat reveal reveal-delay-3">
-          <div class="skill-cat-label">Extras</div>
-          <div class="skill-list">
-            <div class="skill-item"><span class="skill-name">Python</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.70"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Go</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.55"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">C</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.65"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">jQuery</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.72"></div>
-              </div>
-            </div>
-            <div class="skill-item"><span class="skill-name">Photoshop</span>
-              <div class="skill-bar-wrap">
-                <div class="skill-bar" data-w="0.90"></div>
-              </div>
+          <div class="about-content">
+            <p class="about-lead">Electrical engineer turned code craftsman. I don't just write code — I architect digital experiences.</p>
+            <p class="about-body">With 5+ years navigating the full stack, I've shipped everything from pixel-perfect frontends to robust backend systems. I founded <span class="highlight">CODEWORM</span> — an online training center empowering the next generation of developers.</p>
+            <p class="about-body">I thrive in chaos: complex requirements, shifting tech landscapes, and the beautiful mess of turning ideas into products.</p>
+            <div class="about-facts">
+              <div class="fact-item"><span class="fact-key">location</span><span class="fact-sep">:</span><span class="fact-val">Kolkata, India</span></div>
+              <div class="fact-item"><span class="fact-key">background</span><span class="fact-sep">:</span><span class="fact-val">Electrical Engg. → Web Dev</span></div>
+              <div class="fact-item"><span class="fact-key">founded</span><span class="fact-sep">:</span><span class="fact-val">CODEWORM Training</span></div>
+              <div class="fact-item"><span class="fact-key">status</span><span class="fact-sep">:</span><span class="fact-val"><span class="status-green">● available_for_work</span></span></div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="section-label reveal">Selected Work</div>
-    <h2 class="reveal reveal-delay-1">Things I've built</h2>
-    <div class="projects-grid">
-      <a class="project-card reveal" href="#" onclick="return false">
-        <div class="project-num">01</div>
-        <div class="project-tag">Web App</div>
-        <div class="project-title">CODEWORM Platform</div>
-        <div class="project-desc">Online training platform with course management, video lessons, and student progress
-          tracking. Built from scratch.</div>
-        <div class="project-stack">
-          <span class="project-tech">React</span>
-          <span class="project-tech">Node JS</span>
-          <span class="project-tech">MongoDB</span>
-          <span class="project-tech">Express</span>
+    <!-- Skills Section -->
+    <section class="section skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 02</div>
+          <h2 class="section-title">skill<span class="accent">_</span>tree</h2>
         </div>
-        <div class="project-link">View Project <span class="project-arrow">→</span></div>
-      </a>
-      <a class="project-card reveal reveal-delay-1" href="#" onclick="return false">
-        <div class="project-num">02</div>
-        <div class="project-tag">E-Commerce</div>
-        <div class="project-title">Multi-Vendor Marketplace</div>
-        <div class="project-desc">A full-featured marketplace with vendor dashboards, Stripe payments, and real-time
-          order tracking.</div>
-        <div class="project-stack">
-          <span class="project-tech">Next JS</span>
-          <span class="project-tech">Tailwind</span>
-          <span class="project-tech">MySQL</span>
-          <span class="project-tech">PHP</span>
+        <div class="skills-filter">
+          <button class="filter-btn active" data-filter="all">all</button>
+          <button class="filter-btn" data-filter="frontend">frontend</button>
+          <button class="filter-btn" data-filter="backend">backend</button>
+          <button class="filter-btn" data-filter="tools">tools</button>
         </div>
-        <div class="project-link">View Project <span class="project-arrow">→</span></div>
-      </a>
-      <a class="project-card reveal reveal-delay-2" href="#" onclick="return false">
-        <div class="project-num">03</div>
-        <div class="project-tag">CMS / WordPress</div>
-        <div class="project-title">Agency Website Suite</div>
-        <div class="project-desc">Custom WordPress theme and plugin set for a digital agency — fast, accessible, and
-          fully editable by non-devs.</div>
-        <div class="project-stack">
-          <span class="project-tech">WordPress</span>
-          <span class="project-tech">PHP</span>
-          <span class="project-tech">CSS3</span>
-          <span class="project-tech">SEO</span>
+        <div class="skills-grid" id="skillsGrid">
+          <!-- Injected by JS -->
         </div>
-        <div class="project-link">View Project <span class="project-arrow">→</span></div>
-      </a>
-      <a class="project-card reveal reveal-delay-3" href="#" onclick="return false">
-        <div class="project-num">04</div>
-        <div class="project-tag">REST API</div>
-        <div class="project-title">Developer Portfolio API</div>
-        <div class="project-desc">A headless CMS-style REST API for managing portfolios with JWT auth, role-based
-          access, and rate limiting.</div>
-        <div class="project-stack">
-          <span class="project-tech">Node JS</span>
-          <span class="project-tech">Express</span>
-          <span class="project-tech">MongoDB</span>
-          <span class="project-tech">JWT</span>
-        </div>
-        <div class="project-link">View Project <span class="project-arrow">→</span></div>
-      </a>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="contact-inner">
-      <div class="section-label reveal">Contact</div>
-      <h2 class="reveal reveal-delay-1">Let's work<br>together</h2>
-      <p class="contact-sub reveal reveal-delay-2">Have a project in mind? I'm open to freelance, full-time, and remote
-        opportunities. Drop me a message.</p>
-      <div class="contact-layout">
-        <div class="contact-info reveal reveal-delay-2">
-          <div class="contact-item">
-            <span class="contact-item-label">Phone</span>
-            <a href="tel:8918669308" class="contact-item-val">+91 89186 69308</a>
-          </div>
-          <div class="contact-item">
-            <span class="contact-item-label">Email</span>
-            <a href="mailto:chiranjit.rick002@gmail.com" class="contact-item-val">chiranjit.rick002@gmail.com</a>
-          </div>
-          <div class="contact-item">
-            <span class="contact-item-label">Location</span>
-            <span class="contact-item-val">Kolkata, West Bengal, India</span>
-          </div>
-          <div class="contact-item">
-            <span class="contact-item-label">Status</span>
-            <span class="contact-item-val" style="color:var(--accent)">● Available for hire</span>
-          </div>
+    <!-- Projects Section -->
+    <section class="section projects-section" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 03</div>
+          <h2 class="section-title">featured<span class="accent">_</span>work</h2>
         </div>
-        <form class="contact-form reveal reveal-delay-3" id="contactForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-input" placeholder="John Doe" required />
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="section experience-section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 04</div>
+          <h2 class="section-title">commit<span class="accent">_</span>log</h2>
+        </div>
+        <div class="timeline" id="timeline">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">// 05</div>
+          <h2 class="section-title">init<span class="accent">_</span>connection</h2>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <span class="terminal-title">send_message.sh</span>
             </div>
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-input" placeholder="john@example.com" required />
+            <div class="terminal-body contact-form-wrap">
+              <div class="form-row">
+                <label class="form-label"><span class="prompt-t">$</span> name=</label>
+                <input type="text" id="cName" class="terminal-input" placeholder="your_name" />
+              </div>
+              <div class="form-row">
+                <label class="form-label"><span class="prompt-t">$</span> email=</label>
+                <input type="email" id="cEmail" class="terminal-input" placeholder="you@example.com" />
+              </div>
+              <div class="form-row">
+                <label class="form-label"><span class="prompt-t">$</span> msg=</label>
+                <textarea id="cMsg" class="terminal-input" rows="4" placeholder="your_message_here..."></textarea>
+              </div>
+              <button class="btn btn-primary submit-btn" id="contactSubmit">./send_message.sh</button>
+              <div class="form-feedback" id="formFeedback"></div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Phone (optional)</label>
-            <input type="tel" class="form-input" placeholder="+91 00000 00000" />
+          <div class="contact-info">
+            <p class="contact-lead">Got a project? A question? Or just want to talk tech?</p>
+            <div class="contact-links">
+              <a href="tel:8918669308" class="contact-link"><span class="link-icon">📞</span><span>+91 89186 69308</span></a>
+              <a href="mailto:chiranjit@codeworm.in" class="contact-link"><span class="link-icon">✉</span><span>chiranjit@codeworm.in</span></a>
+              <a href="https://github.com/chiranjit2020" target="_blank" class="contact-link"><span class="link-icon">⌥</span><span>github/chiranjit2020</span></a>
+            </div>
+            <div class="availability-box">
+              <div class="avail-header">
+                <span class="status-green">●</span> open_to_work
+              </div>
+              <p class="avail-body">Available for freelance projects, full-time roles, and collaborations.</p>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Message</label>
-            <textarea class="form-input" placeholder="Tell me about your project..." required></textarea>
-          </div>
-          <div class="form-submit">
-            <div class="form-msg" id="formMsg">Message sent! I'll get back to you soon.</div>
-            <button type="submit" class="btn btn-primary">Send Message →</button>
-          </div>
-        </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <span class="prompt">root@ck:~$</span>
+        <span class="footer-text"> echo "© 2025 Chiranjit Karmakar. Built with passion & caffeine."</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- AI Chatbot -->
+  <button class="chat-fab" id="chatFab" aria-label="Ask CK AI">
+    <span class="fab-icon">⌘</span>
+    <span class="fab-label">ask_ck</span>
+  </button>
+
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="chat-status-dot"></span>
+        <span class="chat-title">ask_ck // AI assistant</span>
+      </div>
+      <button class="chat-close" id="chatClose">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg assistant">
+        <span class="msg-prompt">ck_ai$</span>
+        <span class="msg-text">Hey! I'm CK's AI. Ask me anything about Chiranjit — his skills, experience, projects, or how to work with him.</span>
+      </div>
+      <div class="chat-suggestions">
+        <button class="suggestion-btn" onclick="askSuggestion('What tech stack does Chiranjit use?')">What tech stack?</button>
+        <button class="suggestion-btn" onclick="askSuggestion('Tell me about CODEWORM')">About CODEWORM</button>
+        <button class="suggestion-btn" onclick="askSuggestion('Is Chiranjit available for hire?')">Available for hire?</button>
       </div>
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-copy">© 2026 Chiranjit Karmakar. All rights reserved.</div>
-    <div class="footer-socials">
-      <a href="https://github.com/chiranjit2020" onclick="return false">GitHub</a>
-      <a href="https://www.linkedin.com/in/chiranjit-karmakar-6b8639203" onclick="return false">LinkedIn</a>
-      <a href="https://www.youtube.com/channel/UCSPXTAYn7JQFd8Qeoe58iEw" onclick="return false">YouTube</a>
-      <a href="https://chiranjit2020.github.io/portfolio/images/chiranjit-karmakar-resume.pdf">Resume</a>
+    <div class="chat-input-row">
+      <span class="prompt-t">$</span>
+      <input type="text" id="chatInput" class="chat-input" placeholder="type your question..." />
+      <button class="chat-send" id="chatSend">↵</button>
     </div>
-  </footer>
+  </div>
 
   <script>
-    // Cursor
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    if (window.matchMedia('(pointer:fine)').matches) {
-      document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
-        cursor.style.transform = `translate(${mx - 4}px,${my - 4}px)`;
-      });
-      function animRing() {
-        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-        ring.style.transform = `translate(${rx - 18}px,${ry - 18}px)`;
-        requestAnimationFrame(animRing);
-      }
-      animRing();
-      document.querySelectorAll('a,button,.project-card,.stat-card').forEach(el => {
-        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-      });
+// ===== DATA =====
+const DATA = {
+  skills: [
+    { name: "HTML5", icon: "H5", category: "frontend", level: 95 },
+    { name: "CSS3", icon: "CS", category: "frontend", level: 92 },
+    { name: "JavaScript", icon: "JS", category: "frontend", level: 90 },
+    { name: "React JS", icon: "Re", category: "frontend", level: 85 },
+    { name: "Next JS", icon: "Nx", category: "frontend", level: 78 },
+    { name: "Bootstrap", icon: "Bs", category: "frontend", level: 90 },
+    { name: "Tailwind", icon: "Tw", category: "frontend", level: 88 },
+    { name: "jQuery", icon: "jQ", category: "frontend", level: 85 },
+    { name: "Node JS", icon: "No", category: "backend", level: 82 },
+    { name: "Express JS", icon: "Ex", category: "backend", level: 80 },
+    { name: "MongoDB", icon: "Mg", category: "backend", level: 78 },
+    { name: "PHP", icon: "Ph", category: "backend", level: 80 },
+    { name: "MySQL", icon: "Sq", category: "backend", level: 82 },
+    { name: "WordPress", icon: "Wp", category: "backend", level: 88 },
+    { name: "Python", icon: "Py", category: "backend", level: 65 },
+    { name: "Rust", icon: "Rs", category: "backend", level: 45 },
+    { name: "Linux", icon: "Lx", category: "tools", level: 80 },
+    { name: "Bash", icon: "Sh", category: "tools", level: 75 },
+    { name: "Photoshop", icon: "Ps", category: "tools", level: 70 },
+    { name: "SEO", icon: "Se", category: "tools", level: 78 },
+    { name: "C", icon: "C_", category: "tools", level: 60 },
+    { name: "Git", icon: "Gt", category: "tools", level: 85 },
+  ],
+
+  projects: [
+    {
+      id: "01",
+      name: "CODEWORM Platform",
+      desc: "Founded and built a full-featured online training center empowering aspiring developers with structured courses, live sessions, and community support.",
+      tags: ["React", "Node.js", "MongoDB", "Express"],
+      status: "live",
+      year: "2022",
+      link: "#"
+    },
+    {
+      id: "02",
+      name: "E-Commerce Suite",
+      desc: "A scalable e-commerce solution with real-time inventory management, payment gateway integrations, and an admin dashboard.",
+      tags: ["Next.js", "MySQL", "PHP", "Tailwind"],
+      status: "live",
+      year: "2023",
+      link: "#"
+    },
+    {
+      id: "03",
+      name: "SaaS Analytics App",
+      desc: "Multi-tenant SaaS application providing real-time analytics and data visualization dashboards for SMB clients.",
+      tags: ["React", "Node.js", "MongoDB", "Chart.js"],
+      status: "shipped",
+      year: "2023",
+      link: "#"
+    },
+    {
+      id: "04",
+      name: "WordPress Agency Theme",
+      desc: "Pixel-perfect custom WordPress theme with Elementor integration, SEO optimization, and performance scores of 95+ on Lighthouse.",
+      tags: ["WordPress", "PHP", "CSS3", "SEO"],
+      status: "shipped",
+      year: "2021",
+      link: "#"
+    },
+    {
+      id: "05",
+      name: "REST API Microservices",
+      desc: "Designed and deployed a microservices architecture with JWT auth, rate limiting, and full documentation for a fintech client.",
+      tags: ["Node.js", "Express", "MongoDB", "Docker"],
+      status: "shipped",
+      year: "2024",
+      link: "#"
+    },
+    {
+      id: "06",
+      name: "Portfolio v1 → v2",
+      desc: "Redesigned personal portfolio from scratch — PWA, SPA, terminal aesthetic, AI-powered chatbot. The one you're looking at right now.",
+      tags: ["HTML5", "CSS3", "JavaScript", "PWA"],
+      status: "live",
+      year: "2025",
+      link: "#"
+    },
+  ],
+
+  experience: [
+    {
+      year: "2024 — present",
+      role: "Senior Fullstack Developer",
+      org: "Freelance & Clients",
+      desc: "Architecting scalable web applications, consulting on tech stack decisions, and delivering end-to-end product builds for global clients.",
+      commit: "feat: scaled to senior fullstack scope"
+    },
+    {
+      year: "2022 — 2024",
+      role: "Founder & Lead Instructor",
+      org: "CODEWORM",
+      desc: "Founded an online training center. Designed curriculum, built the platform, mentored 100+ students in modern web development.",
+      commit: "init: launched codeworm training"
+    },
+    {
+      year: "2020 — 2022",
+      role: "Frontend Developer",
+      org: "Agency Work",
+      desc: "Crafted responsive, high-performance websites for agencies and direct clients using React, WordPress, and custom PHP solutions.",
+      commit: "add: frontend expertise, wordpress, php"
+    },
+    {
+      year: "2019 — 2020",
+      role: "Electrical Engineer",
+      org: "Industry",
+      desc: "Began career in electrical engineering before pivoting to web development — bringing an engineer's problem-solving mindset to code.",
+      commit: "chore: career pivot electrical → web"
+    },
+  ]
+};
+
+</script>
+  <script>
+// ===== BOOT SEQUENCE =====
+const bootMessages = [
+  "Initializing CK_OS v2.0...",
+  "Loading kernel modules...",
+  "Mounting filesystem: /portfolio",
+  "Starting services: [nginx] [node] [mongodb]",
+  "Bootstrapping UI components...",
+  "Injecting personality: success",
+  "System ready. Welcome.",
+];
+
+function runBoot() {
+  const logEl = document.getElementById("bootLog");
+  const bar = document.getElementById("bootBar");
+  let i = 0;
+  const total = bootMessages.length;
+
+  function step() {
+    if (i >= total) {
+      setTimeout(() => {
+        document.getElementById("bootScreen").style.opacity = "0";
+        document.getElementById("bootScreen").style.transition = "opacity 0.6s ease";
+        setTimeout(() => {
+          document.getElementById("bootScreen").style.display = "none";
+          document.getElementById("app").style.display = "block";
+          initApp();
+        }, 650);
+      }, 400);
+      return;
     }
+    const line = document.createElement("div");
+    line.className = "boot-line";
+    line.textContent = bootMessages[i];
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+    bar.style.width = ((i + 1) / total * 100) + "%";
+    i++;
+    setTimeout(step, 200 + Math.random() * 150);
+  }
+  step();
+}
 
-    // Scroll progress
-    const prog = document.getElementById('progress');
-    window.addEventListener('scroll', () => {
-      const s = document.documentElement.scrollTop;
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      prog.style.width = (s / h * 100) + '%';
-      document.getElementById('navbar').classList.toggle('scrolled', s > 60);
-    }, { passive: true });
+// ===== APP INIT =====
+function initApp() {
+  initCursor();
+  initNav();
+  initHero();
+  initAbout();
+  initSkills();
+  initProjects();
+  initExperience();
+  initContact();
+  initChat();
+  initScrollReveal();
+  registerServiceWorker();
+}
 
-    // Hamburger
-    const ham = document.getElementById('hamburger');
-    const mob = document.getElementById('mobileMenu');
-    ham.addEventListener('click', () => {
-      ham.classList.toggle('open');
-      mob.classList.toggle('open');
-      document.body.classList.toggle('nav-open');
-    });
-    mob.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        ham.classList.remove('open');
-        mob.classList.remove('open');
-        document.body.classList.remove('nav-open');
-      });
-    });
+// ===== CURSOR =====
+function initCursor() {
+  const cursor = document.getElementById("cursor");
+  const dot = document.getElementById("cursorDot");
+  let mx = 0, my = 0, cx = 0, cy = 0;
 
-    // Reveal on scroll
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          // Animate skill bars
-          e.target.querySelectorAll('.skill-bar').forEach(bar => {
-            bar.style.width = (parseFloat(bar.dataset.w) * 100) + '%';
-            bar.classList.add('animate');
-          });
-        }
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.addEventListener("mousemove", (e) => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(${mx}px, ${my}px)`;
+  });
 
-    // Also observe skill cats for bars
-    const skillObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('.skill-bar').forEach(bar => {
-            bar.style.transformOrigin = 'left';
-            bar.style.transform = `scaleX(${bar.dataset.w})`;
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-    document.querySelectorAll('.skill-cat').forEach(el => skillObs.observe(el));
+  function animateCursor() {
+    cx += (mx - cx) * 0.12;
+    cy += (my - cy) * 0.12;
+    cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
 
-    // Contact form
-    document.getElementById('contactForm').addEventListener('submit', e => {
+  document.querySelectorAll("a, button, .skill-card, .project-card").forEach(el => {
+    el.addEventListener("mouseenter", () => cursor.classList.add("expanded"));
+    el.addEventListener("mouseleave", () => cursor.classList.remove("expanded"));
+  });
+}
+
+// ===== NAVIGATION =====
+function initNav() {
+  const navbar = document.getElementById("navbar");
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+
+  window.addEventListener("scroll", () => {
+    navbar.classList.toggle("scrolled", window.scrollY > 60);
+  });
+
+  hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navLinks.classList.toggle("open");
+  });
+
+  document.querySelectorAll(".nav-links a").forEach(a => {
+    a.addEventListener("click", (e) => {
       e.preventDefault();
-      const msg = document.getElementById('formMsg');
-      msg.classList.add('show');
-      e.target.reset();
-      setTimeout(() => msg.classList.remove('show'), 4000);
+      navLinks.classList.remove("open");
+      hamburger.classList.remove("active");
+      const target = document.querySelector(a.getAttribute("href"));
+      if (target) target.scrollIntoView({ behavior: "smooth" });
     });
+  });
+}
 
-    // Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-      const sw = `
-    self.addEventListener('install',e=>self.skipWaiting());
-    self.addEventListener('activate',e=>clients.claim());
-    self.addEventListener('fetch',e=>{
-      if(e.request.mode==='navigate'){
-        e.respondWith(fetch(e.request).catch(()=>caches.match('/')));
-      }
-    });
-  `;
-      const blob = new Blob([sw], { type: 'text/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => { });
+// ===== HERO =====
+function initHero() {
+  const roles = ["Fullstack Developer", "Frontend Engineer", "Backend Architect", "Founder @ CODEWORM", "Open Source Builder"];
+  let ri = 0;
+  const roleEl = document.getElementById("roleCycle");
+
+  function cycleRole() {
+    roleEl.style.opacity = "0";
+    setTimeout(() => {
+      ri = (ri + 1) % roles.length;
+      roleEl.textContent = roles[ri];
+      roleEl.style.opacity = "1";
+    }, 400);
+  }
+  setInterval(cycleRole, 2500);
+}
+
+// ===== ABOUT =====
+function initAbout() {
+  const json = {
+    name: "Chiranjit Karmakar",
+    alias: "CK",
+    role: "Fullstack Developer",
+    location: "Kolkata, India",
+    background: "Electrical Engg. → Web Dev",
+    experience: "5+ years",
+    founded: "CODEWORM Training",
+    languages: ["JavaScript", "PHP", "Python", "Rust"],
+    interests: ["open_source", "teaching", "building_products"],
+    available: true
+  };
+
+  const pre = document.getElementById("aboutJson");
+  const str = JSON.stringify(json, null, 2);
+  let i = 0;
+
+  function typeJson() {
+    if (i < str.length) {
+      pre.textContent += str[i];
+      i++;
+      setTimeout(typeJson, 12);
     }
-  </script>
-
-  <script>
-const sourceHTML = document.getElementById("content").innerHTML;
-const target = document.getElementById("typing-container");
-
-let index = 0;
-
-// Base typing speed
-const baseSpeed = 18;
-
-// Human-like delay logic
-function getDelay(char) {
-  if (char === " ") return random(5, 15); // faster spaces
-  if (char === "." || char === "!" || char === "?") return random(250, 400); // sentence pause
-  if (char === ",") return random(120, 200); // comma pause
-  if (char === "\n") return random(300, 500);
-  return random(10, 35); // normal typing variation
-}
-
-// Randomizer for natural feel
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// Handle HTML tags properly
-function typeEffect() {
-  if (index >= sourceHTML.length) return;
-
-  let char = sourceHTML[index];
-
-  // If it's an HTML tag, append entire tag instantly
-  if (char === "<") {
-    let tagEnd = sourceHTML.indexOf(">", index);
-    target.innerHTML += sourceHTML.slice(index, tagEnd + 1);
-    index = tagEnd + 1;
-    setTimeout(typeEffect, 0);
-    return;
   }
 
-  // Normal character typing
-  target.innerHTML += char;
-  index++;
-
-  setTimeout(typeEffect, getDelay(char));
+  const obs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      typeJson();
+      obs.disconnect();
+    }
+  }, { threshold: 0.3 });
+  obs.observe(document.getElementById("about"));
 }
 
-// Start typing
-typeEffect();
+// ===== SKILLS =====
+function initSkills() {
+  const grid = document.getElementById("skillsGrid");
+
+  function renderSkills(filter) {
+    grid.innerHTML = "";
+    const filtered = filter === "all" ? DATA.skills : DATA.skills.filter(s => s.category === filter);
+    filtered.forEach((skill, idx) => {
+      const card = document.createElement("div");
+      card.className = "skill-card";
+      card.setAttribute("data-category", skill.category);
+      card.style.animationDelay = `${idx * 40}ms`;
+      card.innerHTML = `
+        <div class="skill-icon">${skill.icon}</div>
+        <div class="skill-name">${skill.name}</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar" style="width:0%" data-level="${skill.level}%"></div>
+        </div>
+        <div class="skill-level">${skill.level}%</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll(".skill-bar").forEach(bar => {
+        bar.style.width = bar.dataset.level;
+      });
+    }, 100);
+  }
+
+  renderSkills("all");
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderSkills(btn.dataset.filter);
+    });
+  });
+}
+
+// ===== PROJECTS =====
+function initProjects() {
+  const grid = document.getElementById("projectsGrid");
+
+  DATA.projects.forEach((proj, idx) => {
+    const card = document.createElement("div");
+    card.className = "project-card reveal";
+    card.innerHTML = `
+      <div class="proj-header">
+        <span class="proj-id">${proj.id}</span>
+        <span class="proj-status status-${proj.status}">${proj.status}</span>
+        <span class="proj-year">${proj.year}</span>
+      </div>
+      <h3 class="proj-name">${proj.name}</h3>
+      <p class="proj-desc">${proj.desc}</p>
+      <div class="proj-tags">
+        ${proj.tags.map(t => `<span class="proj-tag">${t}</span>`).join("")}
+      </div>
+      <a href="${proj.link}" class="proj-link">view_project →</a>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ===== EXPERIENCE =====
+function initExperience() {
+  const timeline = document.getElementById("timeline");
+
+  DATA.experience.forEach((xp, idx) => {
+    const item = document.createElement("div");
+    item.className = "timeline-item reveal";
+    item.innerHTML = `
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-meta">
+          <span class="timeline-year">${xp.year}</span>
+          <span class="timeline-commit">${xp.commit}</span>
+        </div>
+        <h3 class="timeline-role">${xp.role}</h3>
+        <div class="timeline-org">@ ${xp.org}</div>
+        <p class="timeline-desc">${xp.desc}</p>
+      </div>
+    `;
+    timeline.appendChild(item);
+  });
+}
+
+// ===== CONTACT =====
+function initContact() {
+  const btn = document.getElementById("contactSubmit");
+  const feedback = document.getElementById("formFeedback");
+
+  btn.addEventListener("click", () => {
+    const name = document.getElementById("cName").value.trim();
+    const email = document.getElementById("cEmail").value.trim();
+    const msg = document.getElementById("cMsg").value.trim();
+
+    if (!name || !email || !msg) {
+      feedback.textContent = "$ error: all fields required";
+      feedback.className = "form-feedback error";
+      return;
+    }
+
+    btn.textContent = "executing...";
+    btn.disabled = true;
+    setTimeout(() => {
+      feedback.textContent = "$ success: message queued. CK will respond soon!";
+      feedback.className = "form-feedback success";
+      btn.textContent = "./send_message.sh";
+      btn.disabled = false;
+      document.getElementById("cName").value = "";
+      document.getElementById("cEmail").value = "";
+      document.getElementById("cMsg").value = "";
+    }, 1500);
+  });
+}
+
+// ===== AI CHATBOT =====
+function initChat() {
+  const fab = document.getElementById("chatFab");
+  const panel = document.getElementById("chatPanel");
+  const closeBtn = document.getElementById("chatClose");
+  const sendBtn = document.getElementById("chatSend");
+  const input = document.getElementById("chatInput");
+
+  fab.addEventListener("click", () => {
+    panel.classList.toggle("open");
+    if (panel.classList.contains("open")) input.focus();
+  });
+
+  closeBtn.addEventListener("click", () => panel.classList.remove("open"));
+
+  sendBtn.addEventListener("click", sendChat);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") sendChat(); });
+}
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const messages = document.getElementById("chatMessages");
+  const q = input.value.trim();
+  if (!q) return;
+
+  input.value = "";
+  appendMsg("user", q);
+
+  const typing = appendMsg("assistant", "...", true);
+
+  const systemPrompt = `You are the AI assistant for Chiranjit Karmakar's portfolio website. 
+Your name is "CK-AI". Answer questions about Chiranjit in a friendly, concise, and slightly witty way. 
+Keep answers under 100 words unless details are needed.
+
+About Chiranjit:
+- Fullstack developer with 5+ years experience
+- Skills: HTML5, CSS3, JavaScript, React, Next.js, Node.js, Express, MongoDB, PHP, MySQL, WordPress, Python, Rust, Tailwind, Bootstrap, jQuery, Linux, Bash, SEO, Photoshop
+- Background: Electrical Engineer turned Web Developer
+- Founded CODEWORM — an online training center for aspiring developers
+- Location: Kolkata, India
+- Contact: +91 89186 69308
+- Available for freelance projects, full-time roles, and collaborations
+- Passionate about teaching, building products, and open source
+- Projects include e-commerce platforms, SaaS apps, WordPress themes, REST APIs
+
+Keep responses conversational, helpful, and in terminal/dev style. Use "CK" to refer to Chiranjit.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: q }]
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.content?.map(b => b.text || "").join("") || "Error fetching response.";
+    typing.querySelector(".msg-text").textContent = reply;
+    typing.classList.remove("typing");
+  } catch (err) {
+    typing.querySelector(".msg-text").textContent = "Connection error. Try again.";
+    typing.classList.remove("typing");
+  }
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function appendMsg(role, text, isTyping = false) {
+  const messages = document.getElementById("chatMessages");
+  const el = document.createElement("div");
+  el.className = `chat-msg ${role}${isTyping ? " typing" : ""}`;
+  el.innerHTML = `<span class="msg-prompt">${role === "user" ? "you$" : "ck_ai$"}</span><span class="msg-text">${text}</span>`;
+  messages.appendChild(el);
+  messages.scrollTop = messages.scrollHeight;
+  return el;
+}
+
+function askSuggestion(q) {
+  document.getElementById("chatInput").value = q;
+  sendChat();
+  document.querySelectorAll(".chat-suggestions").forEach(el => el.remove());
+}
+
+// ===== SCROLL REVEAL =====
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".reveal, .section").forEach(el => observer.observe(el));
+}
+
+// ===== SERVICE WORKER =====
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+
+// ===== START =====
+document.addEventListener("DOMContentLoaded", runBoot);
+
 </script>
 </body>
-
 </html>
