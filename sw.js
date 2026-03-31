@@ -2,7 +2,7 @@ const CACHE = "ck-portfolio-v1";
 const ASSETS = [
   "/",
   "/index.html",
-  "/css/style.css",
+  "/css/styles.css",
   "/js/app.js",
   "/js/data.js",
   "/manifest.json"
