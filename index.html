@@ -85,13 +85,17 @@
     <h2 class="reveal reveal-delay-1">Electrical engineer<br>turned web builder</h2>
     <div class="about-grid">
       <div class="about-text reveal reveal-delay-2">
-        <p>I started my journey as an Electrical Engineer, but soon found my true calling in web development — and never looked back. For over <strong>9 years</strong>, I’ve been designing and building scalable, high-performance digital products that blend clean UI with robust engineering.</p>
+        <div id="typing-container"></div>
 
-<p>Currently, I work as a Full Stack Web Developer and Designer at Learn Computer Academy, where I not only build real-world applications but also mentor aspiring developers. I’ve trained 100+ students, helping them transition from beginners to confident web designers and developers with industry-ready skills.</p>
+<div id="content" style="display:none;">
+  <p>I started my journey as an Electrical Engineer, but soon found my true calling in web development — and never looked back. For over <strong>9 years</strong>, I’ve been designing and building scalable, high-performance digital products that blend clean UI with robust engineering.</p>
 
-<p>I’m also the founder of <strong>CODEWORM</strong>, an online learning platform focused on practical, hands-on development. Teaching keeps me deeply connected to fundamentals while constantly refining my own thinking and problem-solving approach.</p>
+  <p>Currently, I work as a Full Stack Web Developer and Designer at Learn Computer Academy, where I not only build real-world applications but also mentor aspiring developers. I’ve trained 100+ students, helping them transition from beginners to confident web designers and developers with industry-ready skills.</p>
 
-<p>I thrive in the fast-evolving world of web development — where adaptability is survival. From modern SPAs and APIs to custom WordPress solutions, I bring precision, performance, and an obsessive attention to detail in every line of code and every pixel I craft.</p>
+  <p>I’m also the founder of <strong>CODEWORM</strong>, an online learning platform focused on practical, hands-on development. Teaching keeps me deeply connected to fundamentals while constantly refining my own thinking and problem-solving approach.</p>
+
+  <p>I thrive in the fast-evolving world of web development — where adaptability is survival. From modern SPAs and APIs to custom WordPress solutions, I bring precision, performance, and an obsessive attention to detail in every line of code and every pixel I craft.</p>
+</div>
 
         <div class="about-badges">
           <span class="badge">Open to Remote</span>
@@ -479,6 +483,55 @@
       navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => { });
     }
   </script>
+
+  <script>
+const sourceHTML = document.getElementById("content").innerHTML;
+const target = document.getElementById("typing-container");
+
+let index = 0;
+
+// Base typing speed
+const baseSpeed = 18;
+
+// Human-like delay logic
+function getDelay(char) {
+  if (char === " ") return random(5, 15); // faster spaces
+  if (char === "." || char === "!" || char === "?") return random(250, 400); // sentence pause
+  if (char === ",") return random(120, 200); // comma pause
+  if (char === "\n") return random(300, 500);
+  return random(10, 35); // normal typing variation
+}
+
+// Randomizer for natural feel
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Handle HTML tags properly
+function typeEffect() {
+  if (index >= sourceHTML.length) return;
+
+  let char = sourceHTML[index];
+
+  // If it's an HTML tag, append entire tag instantly
+  if (char === "<") {
+    let tagEnd = sourceHTML.indexOf(">", index);
+    target.innerHTML += sourceHTML.slice(index, tagEnd + 1);
+    index = tagEnd + 1;
+    setTimeout(typeEffect, 0);
+    return;
+  }
+
+  // Normal character typing
+  target.innerHTML += char;
+  index++;
+
+  setTimeout(typeEffect, getDelay(char));
+}
+
+// Start typing
+typeEffect();
+</script>
 </body>
 
 </html>
