@@ -1,20 +1,21 @@
 {
-  "name": "Chiranjit Karmakar — Portfolio",
-  "short_name": "CK Portfolio",
-  "description": "Fullstack Developer & Founder of CODEWORM",
+  "name": "Chiranjit Karmakar — CODEWORM",
+  "short_name": "CK",
+  "description": "Chiranjit Karmakar — Fullstack Developer & Founder of CODEWORM",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#080808",
-  "theme_color": "#080808",
+  "background_color": "#0a4a3c",
+  "theme_color": "#0a4a3c",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "assets/icon-192.png",
+      "src": "images/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "images/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

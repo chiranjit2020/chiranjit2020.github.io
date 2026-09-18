@@ -10,11 +10,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-  <link rel="manifest" href="./images/site.webmanifest">
   <link rel="mask-icon" href="./images/safari-pinned-tab.svg" color="#5bbad5">
   <meta name="msapplication-TileColor" content="#D65A31">
   <title>Coming Soon — Chiranjit Karmakar - Designer, Front-end & Backend Developer, Founder of CODEWORM</title>
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CK" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oranienbaum&display=swap" rel="stylesheet" />
@@ -165,6 +167,14 @@
     </footer>
 
   </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
 
 </body>
 </html>
