@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#0a4a3c" />
   <meta name="description" content="Chiranjit Karmakar — Fullstack Developer & Founder of CODEWORM" />
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="./images/favicon.png">
@@ -17,15 +17,14 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oranienbaum&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --background: #050708;
-      --foreground: #f5f5f5;
-      --muted: #8b9198;
-      --accent: #00d084;
-      --border: #25292c;
+      --background: #0a4a3c;
+      --foreground: #f2b759;
+      --muted: #a3a094;
+      --border: rgba(242, 183, 89, 0.22);
     }
 
     *, *::after, *::before {
@@ -41,7 +40,7 @@
 
     body {
       min-height: 100vh;
-      min-height: 100dvh; /* accounts for mobile browser chrome */
+      min-height: 100dvh;
 
       display: grid;
       place-items: center;
@@ -52,178 +51,46 @@
       padding: 2rem 1.25rem;
       overflow-x: hidden;
 
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .coming-soon {
-      width: min(90%, 720px);
+      width: min(90%, 640px);
       max-width: 100%;
       text-align: center;
     }
 
-    /* Terminal mark */
-
-    .terminal-mark {
-      position: relative;
-
-      width: 116px;
-      height: 116px;
-
-      margin: 0 auto 4rem;
-
-      display: grid;
-      place-items: center;
-
-      border-radius: 16px;
-      background: var(--background);
-
-      color: var(--accent);
-
-      font-family: monospace;
-      font-size: 3rem;
+    .mark {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 2.5rem;
+      border-radius: 20px;
+      display: block;
     }
-
-    /* Diagonal gradient border: bright at top-left and bottom-right,
-       fading to transparent through the middle of the frame */
-    .terminal-mark::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-
-      border-radius: 16px;
-      padding: 2px;
-
-      background: linear-gradient(
-        135deg,
-        var(--accent) 0%,
-        rgba(0, 208, 132, 0.35) 18%,
-        transparent 40%,
-        transparent 60%,
-        rgba(0, 208, 132, 0.35) 82%,
-        var(--accent) 100%
-      );
-
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-
-      pointer-events: none;
-    }
-
-    /* Corner glow bloom, offset toward top-left and bottom-right */
-    .terminal-mark::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-
-      border-radius: 16px;
-
-      box-shadow:
-        -10px -10px 28px rgba(0, 208, 132, 0.32),
-        10px 10px 28px rgba(0, 208, 132, 0.32),
-        0 0 34px rgba(0, 208, 132, 0.1);
-
-      pointer-events: none;
-    }
-
-    .terminal-mark span {
-      position: relative;
-      z-index: 1;
-      transform: translateY(-3px);
-    }
-
-    /* Heading */
 
     h1 {
-      font-family: monospace;
-      font-size: clamp(1.9rem, 7vw, 4rem);
+      font-family: 'Oranienbaum', 'Manrope', serif;
       font-weight: 400;
-      letter-spacing: -0.05em;
-
-      margin-bottom: 1.5rem;
+      font-size: clamp(2.25rem, 7vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
     }
-
-    h1 span {
-      color: var(--accent);
-    }
-
-    /* Description */
 
     .message {
       color: var(--muted);
-
-      font-family: monospace;
-      font-size: clamp(0.85rem, 2.6vw, 1.1rem);
-      line-height: 1.8;
-
-      margin-bottom: 3.5rem;
+      font-size: clamp(0.95rem, 2.4vw, 1.15rem);
+      line-height: 1.7;
+      margin-bottom: 3rem;
     }
-
-    /* Progress */
-
-    .progress {
-      width: min(100%, 440px);
-      margin: 0 auto 3.5rem;
-    }
-
-    .progress-track {
-      height: 4px;
-
-      overflow: hidden;
-
-      background: var(--border);
-      border-radius: 999px;
-    }
-
-    .progress-value {
-      width: 25%;
-      height: 100%;
-
-      background: var(--accent);
-    }
-
-    .progress-label {
-      margin-top: 0.8rem;
-
-      color: var(--accent);
-
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-
-    /* Status */
 
     .status {
-      color: var(--muted);
-
-      font-family: monospace;
-      font-size: clamp(0.95rem, 3vw, 1.15rem);
-
-      margin-bottom: 4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--foreground);
+      margin-bottom: 3.5rem;
     }
-
-    .cursor {
-      display: inline-block;
-
-      width: 12px;
-      height: 24px;
-
-      margin-left: 4px;
-
-      vertical-align: middle;
-
-      background: var(--accent);
-    }
-
-    /* Links */
 
     .social {
       display: flex;
@@ -231,105 +98,43 @@
       justify-content: center;
       align-items: center;
       gap: 1.5rem;
-
-      margin-bottom: 5rem;
+      margin-bottom: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
     }
 
     .social a {
-      color: var(--muted);
-
+      color: var(--foreground);
       text-decoration: none;
-
-      font-family: monospace;
-      font-size: clamp(0.85rem, 2.6vw, 1rem);
-
-      transition: color 150ms ease;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: border-color 150ms ease;
     }
 
     .social a:hover {
-      color: var(--accent);
+      border-bottom-color: var(--foreground);
     }
-
-    .separator {
-      color: var(--accent);
-    }
-
-    /* Footer */
 
     footer {
-      color: #454b50;
-
-      font-family: monospace;
-      font-size: 0.8rem;
+      color: var(--muted);
+      font-size: 0.75rem;
     }
 
-    @media (max-width: 600px) {
-      .terminal-mark {
-        width: 90px;
-        height: 90px;
-
-        margin-bottom: 2.5rem;
-
-        font-size: 2.3rem;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .status {
-        margin-bottom: 3rem;
-      }
-
-      .social {
-        margin-bottom: 3rem;
-      }
-    }
-
-    /* Tight phones down to 320px */
-    @media (max-width: 380px) {
-      body {
-        padding: 1.5rem 1rem;
-      }
-
-      .terminal-mark {
-        width: 76px;
-        height: 76px;
-
+    @media (max-width: 480px) {
+      .mark {
+        width: 72px;
+        height: 72px;
         margin-bottom: 2rem;
-
-        font-size: 1.9rem;
-      }
-
-      .terminal-mark::before {
-        padding: 1.5px;
-      }
-
-      h1 {
-        margin-bottom: 1.1rem;
-        letter-spacing: -0.03em;
-      }
-
-      .message {
-        margin-bottom: 2.25rem;
-        line-height: 1.6;
-      }
-
-      .progress {
-        margin-bottom: 2.25rem;
       }
 
       .status {
-        margin-bottom: 2.25rem;
+        margin-bottom: 2.5rem;
       }
 
       .social {
-        gap: 0.85rem;
+        gap: 1rem;
         margin-bottom: 3rem;
-      }
-
-      footer {
-        font-size: 0.7rem;
       }
     }
   </style>
@@ -339,45 +144,24 @@
 
   <main class="coming-soon">
 
-    <div class="terminal-mark" aria-hidden="true">
-      <span>&gt;_</span>
-    </div>
+    <img class="mark" src="./images/ck-new-logo6.png" alt="CODEWORM" />
 
-    <h1>
-      Something <span>is coming.</span>
-    </h1>
+    <h1>Something is coming.</h1>
 
     <p class="message">
-      I'm crafting a new experience.<br>
-      Better. Cleaner. Purposeful.
+      A new portfolio — cleaner, more intentional, built from scratch.
     </p>
 
-    <div class="progress" aria-label="25 percent complete">
-      <div class="progress-track">
-        <div class="progress-value"></div>
-      </div>
-
-      <div class="progress-label">
-        25%
-      </div>
-    </div>
-
-    <p class="status">
-      Launching Soon.<span class="cursor"></span>
-    </p>
+    <p class="status">Launching soon</p>
 
     <nav class="social" aria-label="Social links">
-      <a href="#" aria-label="GitHub">GitHub</a>
-      <span class="separator">•</span>
-
-      <a href="#" aria-label="LinkedIn">LinkedIn</a>
-      <span class="separator">•</span>
-
-      <a href="mailto:info@chiranjitkarmakar.com" aria-label="Email">Email</a>
+      <a href="https://github.com/chiranjit2020" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/chiranjit-karmakar-6b8639203" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="mailto:info@chiranjitkarmakar.com">Email</a>
     </nav>
 
     <footer>
-      © 2026 Chiranjit Karmakar
+      © 2026 Chiranjit Karmakar · CODEWORM
     </footer>
 
   </main>
